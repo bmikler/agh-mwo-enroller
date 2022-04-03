@@ -50,5 +50,6 @@ public class MeetingService {
 		session.save(meeting);
 		transaction.commit();
 
+
 	}
 }

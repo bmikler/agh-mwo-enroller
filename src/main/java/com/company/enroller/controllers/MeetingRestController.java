@@ -1,7 +1,6 @@
 package com.company.enroller.controllers;
 
 import com.company.enroller.model.Meeting;
-import com.company.enroller.model.Participant;
 import com.company.enroller.persistence.MeetingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
