@@ -1,61 +1,44 @@
 package com.company.enroller.meeting;
 
 import java.util.Collection;
+import java.util.Optional;
 
-import com.company.enroller.meeting.MeetingMapper;
-import com.company.enroller.meeting.MeetingRequest;
-import com.company.enroller.persistence.DatabaseConnector;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Component;
-
-import com.company.enroller.meeting.Meeting;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
 
-@Component("meetingService")
+@Service
 public class MeetingService {
 
-	private final DatabaseConnector connector;
+	private final MeetingHibernateRepository repository;
 	private final MeetingMapper mapper;
 
-	public MeetingService(MeetingMapper mapper) {
+	public MeetingService(MeetingHibernateRepository repository, MeetingMapper mapper) {
+		this.repository = repository;
 		this.mapper = mapper;
-		connector = DatabaseConnector.getInstance();
 	}
 
 	public Collection<Meeting> getAll() {
-		String hql = "FROM Meeting";
-		Query query = connector.getSession().createQuery(hql);
-		return query.list();
+		return repository.getAll();
 	}
 
-    public Meeting findById(long id) {
-		String hql = "FROM Meeting p where p.id =: id";
-
-		Query query = connector.getSession().createQuery(hql);
-
-		query.setParameter("id", id);
-
-		try {
-			Meeting meeting = (Meeting) query.getSingleResult();
-			return meeting;
-		} catch (NoResultException e) {
-			return null;
-		}
-
+    public Optional<Meeting> findById(long id) {
+		return repository.findById(id);
     }
 
 	public void addMeeting(MeetingRequest meeting) {
 
+		System.out.println(meeting);
+
 		Meeting meetingToSave = mapper.map(meeting);
 
-		Session session = connector.getSession();
+		System.out.println(meetingToSave);
 
-		Transaction transaction = session.beginTransaction();
-		session.save(meetingToSave);
-		transaction.commit();
+		repository.save(meetingToSave);
 
 
 	}

@@ -1,5 +1,6 @@
 package com.company.enroller.meeting;
 
+import com.company.enroller.participant.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,30 +29,21 @@ public class MeetingRestController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getMeetingById(@PathVariable long id) {
 
-        Meeting meeting = meetingService.findById(id);
-
-        if (meeting == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        Meeting meeting = meetingService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
     }
 
-//    @RequestMapping(value = "", method = RequestMethod.POST)
-//    public ResponseEntity<?> addMeeting(@RequestBody MeetingRequest meeting) {
-//
-//        Meeting meetingFound = meetingService.findById(meeting.getId());
-//
-//        if (meetingFound != null) {
-//            throw new ResponseStatusException(HttpStatus.CONFLICT);
-//        }
-//
-//        meetingService.addMeeting(meeting);
-//
-//        return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
-//
-//
-//    }
+    @RequestMapping(value = "", method = RequestMethod.POST)
+    public ResponseEntity<?> addMeeting(@RequestBody MeetingRequest meeting) {
+
+        meetingService.addMeeting(meeting);
+
+        return new ResponseEntity<MeetingRequest>(meeting, HttpStatus.OK);
+
+
+    }
 
 
 

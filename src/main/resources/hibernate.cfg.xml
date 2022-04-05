@@ -4,14 +4,14 @@
 
 <hibernate-configuration>
 	<session-factory>
-		<property name="show_sql">false</property>
+		<property name="show_sql">true</property>
 		<property name="format_sql">true</property>
 		<property name="dialect">com.company.enroller.persistence.SQLiteDialect</property>
 		<property name="connection.driver_class">org.sqlite.JDBC</property>
 		<property name="connection.url">jdbc:sqlite:enroller.db</property>
 		<property name="connection.username"></property>
 		<property name="connection.password"></property>
-	
+
 		<mapping class="com.company.enroller.meeting.Meeting"/>
 		<mapping class="com.company.enroller.participant.Participant"/>
 		

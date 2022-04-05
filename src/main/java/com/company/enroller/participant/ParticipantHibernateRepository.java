@@ -4,17 +4,19 @@ import com.company.enroller.persistence.DatabaseConnector;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
 import java.util.Collection;
 import java.util.Optional;
 
+@Repository
 public class ParticipantHibernateRepository {
 
-    private final DatabaseConnector connector;
+    private DatabaseConnector connector;
 
-    public ParticipantHibernateRepository(DatabaseConnector connector) {
-        this.connector = connector;
+    public ParticipantHibernateRepository() {
+        connector = DatabaseConnector.getInstance();
     }
 
     public Collection<Participant> getAll() {

@@ -5,16 +5,15 @@ import java.util.Optional;
 
 import com.company.enroller.persistence.DatabaseConnector;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component("participantService")
+@Service
 public class ParticipantService {
 
-	private final DatabaseConnector connector;
 	private final ParticipantHibernateRepository repository;
 
 	public ParticipantService(ParticipantHibernateRepository repository) {
 		this.repository = repository;
-		connector = DatabaseConnector.getInstance();
 	}
 
 	public Collection<Participant> getAll() {

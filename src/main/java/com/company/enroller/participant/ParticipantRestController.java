@@ -58,7 +58,7 @@ public class ParticipantRestController {
 
 
 	@RequestMapping(value = "/{login}", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login, @RequestBody Passwrod participantRequest) {
+	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login, @RequestBody ParticipantUpdate participantRequest) {
 
 		Participant participant = participantService.findByLogin(login).orElseThrow(
 			() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

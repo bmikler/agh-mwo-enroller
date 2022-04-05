@@ -14,10 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Meeting {
 
 	@Id
-	@GeneratedValue(generator="sqlite")
-	@TableGenerator(name="sqlite", table="sqlite_sequence",
-			pkColumnName="name", valueColumnName="seq",
-			pkColumnValue="sqliteTestTable")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	@Column
@@ -61,7 +58,7 @@ public class Meeting {
 		return date;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -89,4 +86,14 @@ public class Meeting {
 		return participants;
 	}
 
+	@Override
+	public String toString() {
+		return "Meeting{" +
+				"id=" + id +
+				", title='" + title + '\'' +
+				", description='" + description + '\'' +
+				", date='" + date + '\'' +
+				", participants=" + participants +
+				'}';
+	}
 }
