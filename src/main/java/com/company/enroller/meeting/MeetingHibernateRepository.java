@@ -1,5 +1,6 @@
 package com.company.enroller.meeting;
 
+import com.company.enroller.participant.Participant;
 import com.company.enroller.persistence.DatabaseConnector;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -43,21 +45,17 @@ public class MeetingHibernateRepository {
 
     }
 
-    public Optional<Meeting> findByTitle(String title) {
-        String hql = "FROM Meeting p where p.title =: title";
 
+    public List<Participant> getParticipants (Meeting meeting) {
+        String hql = "select participants FROM Meeting m where m.id =: id";
         Query query = connector.getSession().createQuery(hql);
 
-        query.setParameter("title", title);
+        query.setParameter("id", meeting.getId());
 
-        try {
-            Meeting meeting = (Meeting) query.getSingleResult();
-            return Optional.of(meeting);
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return query.list();
 
     }
+
 
     public void save(Meeting meeting) {
         Session session = connector.getSession();
@@ -65,6 +63,16 @@ public class MeetingHibernateRepository {
         Transaction transaction = session.beginTransaction();
         session.persist(meeting);
         transaction.commit();
+
+    }
+
+    public void update(Meeting meeting) {
+        Session session = connector.getSession();
+
+        Transaction transaction = session.beginTransaction();
+        session.merge(meeting);
+        transaction.commit();
+
 
     }
 

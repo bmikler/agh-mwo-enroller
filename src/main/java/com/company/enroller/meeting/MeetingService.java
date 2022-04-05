@@ -1,15 +1,11 @@
 package com.company.enroller.meeting;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
-import org.springframework.stereotype.Component;
+import com.company.enroller.participant.Participant;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.NoResultException;
 
 @Service
 public class MeetingService {
@@ -32,14 +28,22 @@ public class MeetingService {
 
 	public void addMeeting(MeetingRequest meeting) {
 
-		System.out.println(meeting);
-
 		Meeting meetingToSave = mapper.map(meeting);
-
-		System.out.println(meetingToSave);
-
 		repository.save(meetingToSave);
 
+
+	}
+
+	public List<Participant> getParticipant(Meeting meeting) {
+
+		return repository.getParticipants(meeting);
+
+	}
+
+	public void addParticipant(Meeting meeting, Participant participant) {
+
+		meeting.addParticipant(participant);
+		repository.update(meeting);
 
 	}
 }
