@@ -1,23 +1,27 @@
-package com.company.enroller.persistence;
+package com.company.enroller.meeting;
 
 import java.util.Collection;
 
-import com.company.enroller.model.Participant;
+import com.company.enroller.meeting.MeetingMapper;
+import com.company.enroller.meeting.MeetingRequest;
+import com.company.enroller.persistence.DatabaseConnector;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Component;
 
-import com.company.enroller.model.Meeting;
+import com.company.enroller.meeting.Meeting;
 
 import javax.persistence.NoResultException;
 
 @Component("meetingService")
 public class MeetingService {
 
-	DatabaseConnector connector;
+	private final DatabaseConnector connector;
+	private final MeetingMapper mapper;
 
-	public MeetingService() {
+	public MeetingService(MeetingMapper mapper) {
+		this.mapper = mapper;
 		connector = DatabaseConnector.getInstance();
 	}
 
@@ -40,14 +44,17 @@ public class MeetingService {
 		} catch (NoResultException e) {
 			return null;
 		}
+
     }
 
-	public void addMeeting(Meeting meeting) {
+	public void addMeeting(MeetingRequest meeting) {
+
+		Meeting meetingToSave = mapper.map(meeting);
 
 		Session session = connector.getSession();
 
 		Transaction transaction = session.beginTransaction();
-		session.save(meeting);
+		session.save(meetingToSave);
 		transaction.commit();
 
 

@@ -1,7 +1,5 @@
-package com.company.enroller.controllers;
+package com.company.enroller.meeting;
 
-import com.company.enroller.model.Meeting;
-import com.company.enroller.persistence.MeetingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,21 +37,21 @@ public class MeetingRestController {
         return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseEntity<?> addMeeting(@RequestBody Meeting meeting) {
-
-        Meeting meetingFound = meetingService.findById(meeting.getId());
-
-        if (meetingFound != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-
-        meetingService.addMeeting(meeting);
-
-        return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
-
-
-    }
+//    @RequestMapping(value = "", method = RequestMethod.POST)
+//    public ResponseEntity<?> addMeeting(@RequestBody MeetingRequest meeting) {
+//
+//        Meeting meetingFound = meetingService.findById(meeting.getId());
+//
+//        if (meetingFound != null) {
+//            throw new ResponseStatusException(HttpStatus.CONFLICT);
+//        }
+//
+//        meetingService.addMeeting(meeting);
+//
+//        return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
+//
+//
+//    }
 
 
 

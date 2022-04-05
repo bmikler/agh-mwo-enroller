@@ -12,8 +12,8 @@
 		<property name="connection.username"></property>
 		<property name="connection.password"></property>
 	
-		<mapping class="com.company.enroller.model.Meeting"/>
-		<mapping class="com.company.enroller.model.Participant"/>
+		<mapping class="com.company.enroller.meeting.Meeting"/>
+		<mapping class="com.company.enroller.participant.Participant"/>
 		
 	</session-factory>
 </hibernate-configuration>

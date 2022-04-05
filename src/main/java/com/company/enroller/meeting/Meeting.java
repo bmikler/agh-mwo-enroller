@@ -1,4 +1,4 @@
-package com.company.enroller.model;
+package com.company.enroller.meeting;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.company.enroller.participant.Participant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -33,6 +34,16 @@ public class Meeting {
 	@JoinTable(name = "meeting_participant", joinColumns = { @JoinColumn(name = "meeting_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "participant_login") })
 	Set<Participant> participants = new HashSet<>();
+
+	public Meeting() {
+
+	}
+
+	public Meeting(String title, String description, String date) {
+		this.title = title;
+		this.description = description;
+		this.date = date;
+	}
 
 	public long getId() {
 		return id;

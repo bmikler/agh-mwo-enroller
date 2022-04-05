@@ -1,4 +1,4 @@
-package com.company.enroller.model;
+package com.company.enroller.participant;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

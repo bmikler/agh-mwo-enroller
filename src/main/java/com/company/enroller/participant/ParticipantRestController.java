@@ -1,6 +1,5 @@
-package com.company.enroller.controllers;
+package com.company.enroller.participant;
 
-import java.nio.file.Path;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.company.enroller.model.Participant;
-import com.company.enroller.persistence.ParticipantService;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -28,11 +25,8 @@ public class ParticipantRestController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getParticipantById(@PathVariable("id") String login) {
 
-		Participant participant = participantService.findByLogin(login);
-
-		if (participant == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-		}
+		Participant participant = participantService.findByLogin(login)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
 		return new ResponseEntity<Participant>(participant, HttpStatus.OK);
 	}
@@ -40,11 +34,9 @@ public class ParticipantRestController {
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public ResponseEntity<?> registerParticipant(@RequestBody Participant participant) {
 
-		Participant participantFound = participantService.findByLogin(participant.getLogin());
-
-		if (participantFound != null) {
+		participantService.findByLogin(participant.getLogin()).ifPresent(p -> {
 			throw new ResponseStatusException(HttpStatus.CONFLICT);
-		}
+		});
 
 		participantService.addParticipant(participant);
 
@@ -55,10 +47,8 @@ public class ParticipantRestController {
 	@RequestMapping(value = "", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deleteParticipant(@RequestBody Participant participant) {
 
-		Participant participantFound = participantService.findByLogin(participant.getLogin());
-		if (participantFound == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-		}
+		Participant participantFound = participantService.findByLogin(participant.getLogin())
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
 		participantService.deleteParticipant(participantFound);
 
@@ -68,15 +58,12 @@ public class ParticipantRestController {
 
 
 	@RequestMapping(value = "/{login}", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateParticipant(@PathVariable String login, @RequestBody Participant participant) {
+	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login, @RequestBody Passwrod participantRequest) {
 
-		Participant participantFound = participantService.findByLogin(login);
+		Participant participant = participantService.findByLogin(login).orElseThrow(
+			() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-		if (participantFound == null) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-		}
-
-		participantService.updateParticipant(participantFound, participant);
+		participantService.updateParticipant(participant, participantRequest.getPassword());
 
 		return new ResponseEntity<Participant>(participant, HttpStatus.OK);
 

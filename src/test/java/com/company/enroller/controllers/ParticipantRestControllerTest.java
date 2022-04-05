@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collection;
 
+import com.company.enroller.participant.ParticipantRestController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.company.enroller.model.Participant;
-import com.company.enroller.persistence.MeetingService;
-import com.company.enroller.persistence.ParticipantService;
+import com.company.enroller.participant.Participant;
+import com.company.enroller.meeting.MeetingService;
+import com.company.enroller.participant.ParticipantService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ParticipantRestController.class)
