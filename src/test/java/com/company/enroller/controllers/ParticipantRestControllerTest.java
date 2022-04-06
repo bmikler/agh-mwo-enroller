@@ -121,11 +121,48 @@ public class ParticipantRestControllerTest {
 	@Test
 	public void addNullParticipant() throws Exception {
 
-		String inputJson = "{}";
-		mvc.perform(post("/participants").content(inputJson)
+		String inputJSON = "{}";
+		mvc.perform(post("/participants").content(inputJSON)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 
 	}
+
+	@Test
+	public void addParticipantWithoutLogin() throws Exception {
+
+		String inputJSON = "{\"password\":\"testpassword\"}";
+		mvc.perform(post("/participants").content(inputJSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+
+	}
+
+	@Test
+	public void addParticipantWithEmptyLogin() throws Exception {
+
+		String inputJSON = "{\"login\":\"\",\"password\":\"testpassword\"}";
+		mvc.perform(post("/participants").content(inputJSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+
+	}
+
+	@Test
+	public void addParticipantWithoutPassword() throws Exception {
+
+		String inputJSON = "{\"login\":\"testlogin\"}";;
+		mvc.perform(post("/participants").content(inputJSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+
+	}
+
+	@Test
+	public void addParticipantWithEmptyPassword() throws Exception {
+
+		String inputJSON = "{\"login\":\"testlogin\", \"password\":\"\"}";
+		mvc.perform(post("/participants").content(inputJSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+
+	}
+
 }
 
 
