@@ -2,6 +2,7 @@ package com.company.enroller.meeting;
 
 import com.company.enroller.participant.Participant;
 import com.company.enroller.participant.ParticipantService;
+import com.sun.net.httpserver.HttpsParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,9 +55,9 @@ public class MeetingRestController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> addMeeting(@RequestBody MeetingRequest meeting) {
 
-        meetingService.addMeeting(meeting);
+        Meeting meetingSaved = meetingService.addMeeting(meeting);
 
-        return new ResponseEntity<MeetingRequest>(meeting, HttpStatus.OK);
+        return new ResponseEntity<Meeting>(meetingSaved, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -75,9 +76,45 @@ public class MeetingRestController {
 
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> removeParticipantFromMeeting(@PathVariable long id, @RequestBody Participant participant) {
 
+        Meeting meeting = meetingService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting with id" + id + " not found"));
 
+        if (!meeting.getParticipants().contains(participant)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
 
+        meetingService.removeParticipant(meeting, participant);
+
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteMeeting(@RequestBody Meeting meeting) {
+
+        Meeting meetingToDelete = meetingService.findById(meeting.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting with id" + meeting.getId() + " not found"));
+
+        meetingService.deleteMeeting(meetingToDelete);
+
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<?> updateMeeting (@PathVariable long id, @RequestBody MeetingRequest meetingRequest) {
+
+        Meeting meeting = meetingService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting with id" + id + " not found"));
+
+        Meeting meetingUpdated = meetingService.update(meeting, meetingRequest);
+
+        return new ResponseEntity<Meeting>(meetingUpdated, HttpStatus.OK);
+
+    }
 
 
 }

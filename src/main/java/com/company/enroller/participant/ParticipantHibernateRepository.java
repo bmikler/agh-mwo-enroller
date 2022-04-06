@@ -63,9 +63,7 @@ public class ParticipantHibernateRepository {
 
     }
 
-    public void update(Participant participant, String newPassword) {
-
-        participant.setPassword(newPassword);
+    public void update(Participant participant) {
 
         Session session = connector.getSession();
 

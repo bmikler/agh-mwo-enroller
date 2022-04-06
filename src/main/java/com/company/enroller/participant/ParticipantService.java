@@ -38,9 +38,12 @@ public class ParticipantService {
 
 	}
 
-	public void updateParticipant(Participant participant, String newPassword) {
+	public Participant updateParticipant(Participant participant, String newPassword) {
 
-		repository.update(participant, newPassword);
+		participant.setPassword(newPassword);
+		repository.update(participant);
+
+		return participant;
 
 	}
 

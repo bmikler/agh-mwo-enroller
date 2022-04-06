@@ -26,11 +26,10 @@ public class MeetingService {
 		return repository.findById(id);
     }
 
-	public void addMeeting(MeetingRequest meeting) {
+	public Meeting addMeeting(MeetingRequest meeting) {
 
 		Meeting meetingToSave = mapper.map(meeting);
-		repository.save(meetingToSave);
-
+		return repository.save(meetingToSave);
 
 	}
 
@@ -44,6 +43,30 @@ public class MeetingService {
 
 		meeting.addParticipant(participant);
 		repository.update(meeting);
+
+	}
+
+	public void removeParticipant(Meeting meeting, Participant participant) {
+
+		meeting.removeParticipant(participant);
+		repository.update(meeting);
+
+	}
+
+	public void deleteMeeting(Meeting meeting) {
+
+		repository.delete(meeting);
+	}
+
+	public Meeting update(Meeting meeting, MeetingRequest meetingRequest) {
+
+		meeting.setTitle(meetingRequest.getTitle());
+		meeting.setDescription(meetingRequest.getDescription());
+		meeting.setDate(meetingRequest.getDate());
+
+		repository.update(meeting);
+
+		return meeting;
 
 	}
 }

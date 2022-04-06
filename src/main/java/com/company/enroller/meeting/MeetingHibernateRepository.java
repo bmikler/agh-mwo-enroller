@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -57,12 +58,14 @@ public class MeetingHibernateRepository {
     }
 
 
-    public void save(Meeting meeting) {
+    public Meeting save(Meeting meeting) {
         Session session = connector.getSession();
 
         Transaction transaction = session.beginTransaction();
-        session.persist(meeting);
+        Serializable meetingSaved = session.save(meeting);
         transaction.commit();
+
+        return (Meeting) meetingSaved;
 
     }
 
@@ -73,6 +76,16 @@ public class MeetingHibernateRepository {
         session.merge(meeting);
         transaction.commit();
 
+
+    }
+
+    public void delete(Meeting meeting) {
+
+        Session session = connector.getSession();
+
+        Transaction transaction = session.beginTransaction();
+        session.delete(meeting);
+        transaction.commit();
 
     }
 

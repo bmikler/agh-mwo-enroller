@@ -52,7 +52,7 @@ public class ParticipantRestController {
 
 		participantService.deleteParticipant(participantFound);
 
-		return new ResponseEntity<Participant>(participant, HttpStatus.OK);
+		return ResponseEntity.noContent().build();
 
 	}
 
@@ -63,9 +63,9 @@ public class ParticipantRestController {
 		Participant participant = participantService.findByLogin(login).orElseThrow(
 			() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-		participantService.updateParticipant(participant, participantRequest.getPassword());
+		Participant participantUpdated = participantService.updateParticipant(participant, participantRequest.getPassword());
 
-		return new ResponseEntity<Participant>(participant, HttpStatus.OK);
+		return new ResponseEntity<Participant>(participantUpdated, HttpStatus.OK);
 
 	}
 
