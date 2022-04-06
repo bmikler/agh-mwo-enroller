@@ -5,9 +5,12 @@ import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/participants")
@@ -32,7 +35,7 @@ public class ParticipantRestController {
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public ResponseEntity<?> registerParticipant(@RequestBody Participant participant) {
+	public ResponseEntity<?> registerParticipant(@Valid @RequestBody Participant participant) {
 
 		participantService.findByLogin(participant.getLogin()).ifPresent(p -> {
 			throw new ResponseStatusException(HttpStatus.CONFLICT);
@@ -40,7 +43,7 @@ public class ParticipantRestController {
 
 		participantService.addParticipant(participant);
 
-		return new ResponseEntity<Participant>(participant, HttpStatus.OK);
+		return new ResponseEntity<Participant>(participant, HttpStatus.CREATED);
 
 	}
 

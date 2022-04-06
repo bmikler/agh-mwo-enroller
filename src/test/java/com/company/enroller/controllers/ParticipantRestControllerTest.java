@@ -4,11 +4,15 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import com.company.enroller.participant.ParticipantRestController;
 import org.junit.Test;
@@ -50,4 +54,78 @@ public class ParticipantRestControllerTest {
 				.andExpect(jsonPath("$", hasSize(1))).andExpect(jsonPath("$[0].login", is(participant.getLogin())));
 	}
 
+	@Test
+	public void getParticipantByIdParticipantExist() throws Exception {
+		Participant participant = new Participant();
+		participant.setLogin("testLogin");
+		participant.setPassword("testPassword");
+
+		given(participantService.findByLogin("testLogin")).willReturn(Optional.of(participant));
+
+		mvc.perform(get("/participants/testLogin")
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("login",is(participant.getLogin())))
+				.andExpect(jsonPath("password", is(participant.getPassword())));
+
+	}
+
+	@Test
+	public void getParticipantByIdParticipantNotExist() throws Exception {
+
+		given(participantService.findByLogin("testLogin")).willReturn(Optional.empty());
+
+		mvc.perform(get("/participants/testLogin"))
+				.andExpect(status().isNotFound());
+
+
+	}
+
+	//TODO add participant - ok, existed, null
+	@Test
+	public void addCorrectParticipant() throws Exception {
+
+		Participant participant = new Participant();
+		participant.setLogin("testlogin");
+		participant.setPassword("testpassword");
+
+		String inputJSON = "{\"login\":\"testlogin\", \"password\":\"testpassword\"}";
+
+		given(participantService.findByLogin("testlogin")).willReturn(Optional.empty());
+		mvc.perform(post("/participants").content(inputJSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+
+		given(participantService.findByLogin("testlogin")).willReturn(Optional.of(participant));
+		mvc.perform(post("/participants").content(inputJSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
+
+		verify(participantService, times(2)).findByLogin("testlogin");
+		verify(participantService).addParticipant(participant);
+
+	}
+
+	@Test
+	public void addAlreadyExistedParticipant() throws Exception {
+		Participant participant = new Participant();
+		participant.setLogin("testlogin");
+		participant.setPassword("testpassword");
+
+		String inputJSON = "{\"login\":\"testlogin\", \"password\":\"testpassword\"}";
+
+		given(participantService.findByLogin("testlogin")).willReturn(Optional.of(participant));
+
+		mvc.perform(post("/participants").content(inputJSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
+
+		verify(participantService).findByLogin("testlogin");
+
+	}
+
+
+	@Test
+	public void addNullParticipant() throws Exception {
+
+		String inputJson = "{}";
+		mvc.perform(post("/participants").content(inputJson)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+
+	}
 }
+
+

@@ -8,6 +8,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +49,7 @@ public class ParticipantHibernateRepository {
         Session session = connector.getSession();
 
         Transaction transaction = session.beginTransaction();
-        session.save(participant);
+        session.persist(participant);
         transaction.commit();
 
     }
