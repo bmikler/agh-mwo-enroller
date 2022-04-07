@@ -51,7 +51,7 @@ public class ParticipantRestController {
 	public ResponseEntity<?> deleteParticipant(@RequestBody Participant participant) {
 
 		Participant participantFound = participantService.findByLogin(participant.getLogin())
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
 		participantService.deleteParticipant(participantFound);
 
@@ -61,7 +61,7 @@ public class ParticipantRestController {
 
 
 	@RequestMapping(value = "/{login}", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login, @RequestBody ParticipantUpdate participantRequest) {
+	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login, @Valid @RequestBody ParticipantUpdate participantRequest) {
 
 		Participant participant = participantService.findByLogin(login).orElseThrow(
 			() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

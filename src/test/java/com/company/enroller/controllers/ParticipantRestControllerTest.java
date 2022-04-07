@@ -4,10 +4,8 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,6 +15,7 @@ import java.util.Optional;
 import com.company.enroller.participant.ParticipantRestController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -77,10 +76,8 @@ public class ParticipantRestControllerTest {
 		mvc.perform(get("/participants/testLogin"))
 				.andExpect(status().isNotFound());
 
-
 	}
 
-	//TODO add participant - ok, existed, null
 	@Test
 	public void addCorrectParticipant() throws Exception {
 
@@ -97,7 +94,7 @@ public class ParticipantRestControllerTest {
 		mvc.perform(post("/participants").content(inputJSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
 
 		verify(participantService, times(2)).findByLogin("testlogin");
-		verify(participantService).addParticipant(participant);
+		verify(participantService).addParticipant(any());
 
 	}
 
@@ -114,6 +111,7 @@ public class ParticipantRestControllerTest {
 		mvc.perform(post("/participants").content(inputJSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
 
 		verify(participantService).findByLogin("testlogin");
+		verify(participantService, never()).addParticipant(any());
 
 	}
 
@@ -125,6 +123,8 @@ public class ParticipantRestControllerTest {
 		mvc.perform(post("/participants").content(inputJSON)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 
+		verify(participantService, never()).addParticipant(any());
+
 	}
 
 	@Test
@@ -133,6 +133,8 @@ public class ParticipantRestControllerTest {
 		String inputJSON = "{\"password\":\"testpassword\"}";
 		mvc.perform(post("/participants").content(inputJSON)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+
+		verify(participantService, never()).addParticipant(any());
 
 	}
 
@@ -143,6 +145,8 @@ public class ParticipantRestControllerTest {
 		mvc.perform(post("/participants").content(inputJSON)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 
+		verify(participantService, never()).addParticipant(any());
+
 	}
 
 	@Test
@@ -152,6 +156,8 @@ public class ParticipantRestControllerTest {
 		mvc.perform(post("/participants").content(inputJSON)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 
+		verify(participantService, never()).addParticipant(any());
+
 	}
 
 	@Test
@@ -160,6 +166,100 @@ public class ParticipantRestControllerTest {
 		String inputJSON = "{\"login\":\"testlogin\", \"password\":\"\"}";
 		mvc.perform(post("/participants").content(inputJSON)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+
+		verify(participantService, never()).addParticipant(any());
+
+	}
+
+	@Test
+	public void deleteParticipant() throws Exception {
+		Participant participant = new Participant();
+		participant.setLogin("testlogin");
+		participant.setPassword("testpassword");
+
+		String inputJSON = "{\"login\":\"testlogin\", \"password\":\"testpassword\"}";
+
+		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
+
+		mvc.perform(delete("/participants").content(inputJSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+
+		verify(participantService).deleteParticipant(participant);
+
+	}
+
+	@Test
+	public void deleteParticipantNotExist() throws Exception {
+		String inputJSON = "{\"login\":\"testlogin\", \"password\":\"testpassword\"}";
+
+		when(participantService.findByLogin("testLogin")).thenReturn(Optional.empty());
+
+		mvc.perform(delete("/participants").content(inputJSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+
+		verify(participantService, never()).deleteParticipant(any());
+
+	}
+
+	@Test
+	public void updateParticipantOK() throws Exception {
+		Participant participant = new Participant();
+		participant.setLogin("testlogin");
+		participant.setPassword("testpassword");
+
+		String inputJSON = "{\"password\":\"newPassword\"}";
+
+		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
+		mvc.perform(put("/participants/testlogin").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+
+		verify(participantService).updateParticipant(participant, "newPassword");
+
+	}
+
+	@Test
+	public void updateParticipantNoExist() throws Exception {
+
+		String inputJSON = "{\"password\":\"newPassword\"}";
+
+		when(participantService.findByLogin("testlogin")).thenReturn(Optional.empty());
+		mvc.perform(put("/participants/testlogin").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+		verify(participantService, never()).updateParticipant(any(), any());
+	}
+
+	@Test
+	public void updateParticipantEmptyPassword() throws Exception {
+
+		Participant participant = new Participant();
+		participant.setLogin("testlogin");
+		participant.setPassword("testpassword");
+
+		String inputJSON = "{\"password\":\"\"}";
+
+		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
+		mvc.perform(put("/participants/testlogin").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
+
+		verify(participantService, never()).updateParticipant(any(), any());
+
+	}
+
+	@Test
+	public void updateParticipanNoPassword() throws Exception {
+
+		Participant participant = new Participant();
+		participant.setLogin("testlogin");
+		participant.setPassword("testpassword");
+
+		String inputJSON = "{}";
+
+		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
+		mvc.perform(put("/participants/testlogin").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
+
+		verify(participantService, never()).updateParticipant(any(), any());
 
 	}
 
