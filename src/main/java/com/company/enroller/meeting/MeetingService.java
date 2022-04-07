@@ -1,7 +1,6 @@
 package com.company.enroller.meeting;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +20,7 @@ public class MeetingService {
 	}
 
 	public Collection<Meeting> getAll() {
-		return repository.getAll();
+		return repository.readAll(Meeting.class);
 	}
 
 	public Collection<Meeting> getAllSorted() {
@@ -36,8 +35,8 @@ public class MeetingService {
 
 	public Collection<Meeting> searchByTitleOrDescription(String text) {
 
-		List<Meeting> meetingsByTitle = repository.findMeetingByTitle(text);
-		List<Meeting> meetingsByDescription = repository.findMeetingByDescription(text);
+		List<Meeting> meetingsByTitle = repository.findByTitle(text);
+		List<Meeting> meetingsByDescription = repository.findByDescription(text);
 
 		return ListUtils.union(meetingsByTitle, meetingsByDescription);
 
@@ -45,14 +44,14 @@ public class MeetingService {
 
 	public Collection<Meeting> searchByParticipant(String participant) {
 
-		return repository.findMeetingByParticipant(participant);
+		return repository.findByParticipant(participant);
 
 	}
 
-	public Meeting addMeeting(MeetingRequest meeting) {
+	public void addMeeting(MeetingRequest meeting) {
 
 		Meeting meetingToSave = mapper.map(meeting);
-		return repository.save(meetingToSave);
+		repository.create(meetingToSave);
 
 	}
 

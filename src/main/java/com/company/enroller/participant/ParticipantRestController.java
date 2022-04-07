@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 @RestController
 @RequestMapping("/participants")
@@ -61,12 +62,12 @@ public class ParticipantRestController {
 
 
 	@RequestMapping(value = "/{login}", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login, @Valid @RequestBody ParticipantUpdate participantRequest) {
+	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login, @NotEmpty @RequestParam String newPassword) {
 
 		Participant participant = participantService.findByLogin(login).orElseThrow(
 			() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-		Participant participantUpdated = participantService.updateParticipant(participant, participantRequest.getPassword());
+		Participant participantUpdated = participantService.updateParticipant(participant, newPassword);
 
 		return new ResponseEntity<Participant>(participantUpdated, HttpStatus.OK);
 

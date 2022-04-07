@@ -3,8 +3,6 @@ package com.company.enroller.participant;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.company.enroller.persistence.DatabaseConnector;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +15,7 @@ public class ParticipantService {
 	}
 
 	public Collection<Participant> getAll() {
-		return repository.getAll();
+		return repository.readAll(Participant.class);
 	}
 
 	public Optional<Participant> findByLogin(String login) {
@@ -28,7 +26,7 @@ public class ParticipantService {
 
 	public void addParticipant(Participant participant) {
 
-		repository.save(participant);
+		repository.create(participant);
 
 	}
 

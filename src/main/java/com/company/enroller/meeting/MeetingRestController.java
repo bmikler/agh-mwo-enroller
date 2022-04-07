@@ -65,9 +65,9 @@ public class MeetingRestController {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<?> addMeeting(@RequestBody MeetingRequest meeting) {
 
-        Meeting meetingSaved = meetingService.addMeeting(meeting);
+        meetingService.addMeeting(meeting);
 
-        return new ResponseEntity<Meeting>(meetingSaved, HttpStatus.OK);
+        return new ResponseEntity<MeetingRequest>(meeting, HttpStatus.OK);
     }
 
 
@@ -116,7 +116,6 @@ public class MeetingRestController {
 
         Participant participantToAdd = participantService.findByLogin(participant.getLogin())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participant doesn't exist"));
-
 
         meetingService.addParticipant(meeting, participantToAdd);
 
