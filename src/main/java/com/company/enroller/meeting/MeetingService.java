@@ -1,10 +1,12 @@
 package com.company.enroller.meeting;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import com.company.enroller.participant.Participant;
+import org.apache.commons.collections.ListUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,9 +24,33 @@ public class MeetingService {
 		return repository.getAll();
 	}
 
+	public Collection<Meeting> getAllSorted() {
+
+		return repository.getAll()
+				.stream()
+				.sorted(Comparator.comparing(Meeting::getTitle))
+				.toList();
+
+	}
+
     public Optional<Meeting> findById(long id) {
 		return repository.findById(id);
     }
+
+	public Collection<Meeting> searchByTitleOrDescription(String text) {
+
+		List<Meeting> meetingsByTitle = repository.findMeetingByTitleContainsText(text);
+		List<Meeting> meetingsByDescription = repository.findMeetingByDescriptionContainsText(text);
+
+		return ListUtils.union(meetingsByTitle, meetingsByDescription);
+
+	}
+
+	public Collection<Meeting> searchByParticipant(String participant) {
+
+		return repository.findMeetingByParticipant(participant);
+
+	}
 
 	public Meeting addMeeting(MeetingRequest meeting) {
 

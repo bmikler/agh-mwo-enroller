@@ -14,8 +14,9 @@ import java.util.Optional;
 
 import com.company.enroller.participant.ParticipantRestController;
 import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -114,7 +115,6 @@ public class ParticipantRestControllerTest {
 		verify(participantService, never()).addParticipant(any());
 
 	}
-
 
 	@Test
 	public void addNullParticipant() throws Exception {
@@ -247,7 +247,7 @@ public class ParticipantRestControllerTest {
 	}
 
 	@Test
-	public void updateParticipanNoPassword() throws Exception {
+	public void updateParticipantNoPassword() throws Exception {
 
 		Participant participant = new Participant();
 		participant.setLogin("testlogin");

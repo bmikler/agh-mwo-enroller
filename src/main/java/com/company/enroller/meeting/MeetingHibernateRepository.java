@@ -46,6 +46,40 @@ public class MeetingHibernateRepository {
 
     }
 
+    public List<Meeting> findMeetingByTitleContainsText(String title) {
+
+        String hql = "FROM Meeting p where p.title in :title";
+
+        Query query = connector.getSession().createQuery(hql);
+
+        query.setParameter("title", title);
+
+        return query.list();
+
+    }
+
+    public List<Meeting> findMeetingByDescriptionContainsText(String description) {
+
+        String hql = "FROM Meeting p where p.description in :description";
+
+        Query query = connector.getSession().createQuery(hql);
+
+        query.setParameter("description", description);
+
+        return query.list();
+
+    }
+
+    public List<Meeting> findMeetingByParticipant(String login) {
+
+        String hql = "SELECT m FROM Meeting m JOIN m.participants p where p.login = :login";
+        Query query = connector.getSession().createQuery(hql);
+
+        query.setParameter("login" , login);
+
+        return query.list();
+
+    }
 
     public List<Participant> getParticipants (Meeting meeting) {
         String hql = "select participants FROM Meeting m where m.id =: id";
@@ -56,7 +90,6 @@ public class MeetingHibernateRepository {
         return query.list();
 
     }
-
 
     public Meeting save(Meeting meeting) {
         Session session = connector.getSession();
@@ -88,5 +121,4 @@ public class MeetingHibernateRepository {
         transaction.commit();
 
     }
-
 }

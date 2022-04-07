@@ -2,7 +2,6 @@ package com.company.enroller.meeting;
 
 import com.company.enroller.participant.Participant;
 import com.company.enroller.participant.ParticipantService;
-import com.sun.net.httpserver.HttpsParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +30,12 @@ public class MeetingRestController {
         return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/sorted", method = RequestMethod.GET)
+    public ResponseEntity<?> getAllMeetingsSortedByTitle() {
+        Collection<Meeting> meetings = meetingService.getAllSorted();
+        return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getMeetingById(@PathVariable long id) {
 
@@ -38,6 +43,23 @@ public class MeetingRestController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public ResponseEntity<?> findByTitleOrDescription(@RequestParam String searchText) {
+
+        Collection<Meeting> meetings = meetingService.searchByTitleOrDescription(searchText);
+
+        return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/search-by-participant", method = RequestMethod.GET)
+    public ResponseEntity<?> findByParticipant(@RequestParam String participantName) {
+
+        Collection<Meeting> meetings = meetingService.searchByParticipant(participantName);
+
+        return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
