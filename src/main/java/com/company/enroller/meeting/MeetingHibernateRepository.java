@@ -5,7 +5,6 @@ import com.company.enroller.persistence.DatabaseConnector;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -30,6 +29,12 @@ public class MeetingHibernateRepository {
         return query.list();
     }
 
+    public Collection<Meeting> getAllSortedByTitle() {
+        String hql = "FROM Meeting m ORDER BY m.title";
+        Query query = connector.getSession().createQuery(hql);
+        return query.list();
+    }
+
     public Optional<Meeting> findById(long id) {
         String hql = "FROM Meeting p where p.id =: id";
 
@@ -46,25 +51,25 @@ public class MeetingHibernateRepository {
 
     }
 
-    public List<Meeting> findMeetingByTitleContainsText(String title) {
+    public List<Meeting> findMeetingByTitle(String title) {
 
-        String hql = "FROM Meeting p where p.title in :title";
+        String hql = "FROM Meeting m where m.title like :title";
 
         Query query = connector.getSession().createQuery(hql);
 
-        query.setParameter("title", title);
+        query.setParameter("title", '%'+title+'%');
 
         return query.list();
 
     }
 
-    public List<Meeting> findMeetingByDescriptionContainsText(String description) {
-
-        String hql = "FROM Meeting p where p.description in :description";
+    public List<Meeting> findMeetingByDescription(String description) {
+        
+        String hql = "FROM Meeting m where m.description like :description";
 
         Query query = connector.getSession().createQuery(hql);
 
-        query.setParameter("description", description);
+        query.setParameter("description", '%'+description+'%');
 
         return query.list();
 

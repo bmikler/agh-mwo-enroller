@@ -26,10 +26,7 @@ public class MeetingService {
 
 	public Collection<Meeting> getAllSorted() {
 
-		return repository.getAll()
-				.stream()
-				.sorted(Comparator.comparing(Meeting::getTitle))
-				.toList();
+		return repository.getAllSortedByTitle();
 
 	}
 
@@ -39,8 +36,8 @@ public class MeetingService {
 
 	public Collection<Meeting> searchByTitleOrDescription(String text) {
 
-		List<Meeting> meetingsByTitle = repository.findMeetingByTitleContainsText(text);
-		List<Meeting> meetingsByDescription = repository.findMeetingByDescriptionContainsText(text);
+		List<Meeting> meetingsByTitle = repository.findMeetingByTitle(text);
+		List<Meeting> meetingsByDescription = repository.findMeetingByDescription(text);
 
 		return ListUtils.union(meetingsByTitle, meetingsByDescription);
 
