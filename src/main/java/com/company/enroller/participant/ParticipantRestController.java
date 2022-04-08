@@ -26,8 +26,8 @@ public class ParticipantRestController {
 		return new ResponseEntity<Collection<Participant>>(participants, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> getParticipantById(@PathVariable("id") String login) {
+	@RequestMapping(value = "/{login}", method = RequestMethod.GET)
+	public ResponseEntity<?> getParticipantById(@PathVariable("login") String login) {
 
 		Participant participant = participantService.findByLogin(login)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -62,12 +62,16 @@ public class ParticipantRestController {
 
 
 	@RequestMapping(value = "/{login}", method = RequestMethod.PUT)
-	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login, @NotEmpty @RequestParam String newPassword) {
+	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login,@RequestParam  String password) {
+
+		if (password.isBlank()){
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		}
 
 		Participant participant = participantService.findByLogin(login).orElseThrow(
 			() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-		Participant participantUpdated = participantService.updateParticipant(participant, newPassword);
+		Participant participantUpdated = participantService.updateParticipant(participant, password);
 
 		return new ResponseEntity<Participant>(participantUpdated, HttpStatus.OK);
 

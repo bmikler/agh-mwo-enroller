@@ -1,4 +1,4 @@
-package com.company.enroller.controllers;
+package com.company.enroller.participant;
 
 import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.hasSize;
@@ -14,8 +14,6 @@ import java.util.Optional;
 
 import com.company.enroller.participant.ParticipantRestController;
 import org.junit.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -201,68 +199,56 @@ public class ParticipantRestControllerTest {
 
 	}
 
-	//TODO repair update test for new model
+	@Test
+	public void updateParticipantOK() throws Exception {
+		Participant participant = new Participant();
+		participant.setLogin("testlogin");
+		participant.setPassword("testpassword");
 
-//	@Test
-//	public void updateParticipantOK() throws Exception {
-//		Participant participant = new Participant();
-//		participant.setLogin("testlogin");
-//		participant.setPassword("testpassword");
-//
-//		String input = "newPassword";
-//
-//		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
-//		mvc.perform(put("/participants/testlogin?newPassword=newPassword")).andExpect(status().isOk());
-//
-//		verify(participantService).updateParticipant(participant, "newPassword");
-//
-//	}
-//
-//	@Test
-//	public void updateParticipantNoExist() throws Exception {
-//
-//		String inputJSON = "{\"password\":\"newPassword\"}";
-//
-//		when(participantService.findByLogin("testlogin")).thenReturn(Optional.empty());
-//		mvc.perform(put("/participants/testlogin").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
-//				.andExpect(status().isNotFound());
-//
-//		verify(participantService, never()).updateParticipant(any(), any());
-//	}
-//
-//	@Test
-//	public void updateParticipantEmptyPassword() throws Exception {
-//
-//		Participant participant = new Participant();
-//		participant.setLogin("testlogin");
-//		participant.setPassword("testpassword");
-//
-//		String inputJSON = "{\"password\":\"\"}";
-//
-//		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
-//		mvc.perform(put("/participants/testlogin").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
-//				.andExpect(status().isBadRequest());
-//
-//		verify(participantService, never()).updateParticipant(any(), any());
-//
-//	}
-//
-//	@Test
-//	public void updateParticipantNoPassword() throws Exception {
-//
-//		Participant participant = new Participant();
-//		participant.setLogin("testlogin");
-//		participant.setPassword("testpassword");
-//
-//		String input = null;
-//
-//		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
-//		mvc.perform(put("/participants/testlogin").content(input).contentType(MediaType.APPLICATION_JSON))
-//				.andExpect(status().isBadRequest());
-//
-//		verify(participantService, never()).updateParticipant(any(), any());
-//
-//	}
+		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
+		mvc.perform(put("/participants/testlogin?password=newPassword")).andExpect(status().isOk());
+
+		verify(participantService).updateParticipant(participant, "newPassword");
+
+	}
+
+	@Test
+	public void updateParticipantNoExist() throws Exception {
+
+		when(participantService.findByLogin("testlogin")).thenReturn(Optional.empty());
+		mvc.perform(put("/participants/testlogin?password=newPassword")).andExpect(status().isNotFound());
+
+		verify(participantService, never()).updateParticipant(any(), any());
+	}
+
+	@Test
+	public void updateParticipantEmptyPassword() throws Exception {
+
+		Participant participant = new Participant();
+		participant.setLogin("testlogin");
+		participant.setPassword("testpassword");
+
+
+		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
+		mvc.perform(put("/participants/testlogin?password=")).andExpect(status().isBadRequest());
+
+		verify(participantService, never()).updateParticipant(any(), any());
+
+	}
+
+	@Test
+	public void updateParticipantNoPassword() throws Exception {
+
+		Participant participant = new Participant();
+		participant.setLogin("testlogin");
+		participant.setPassword("testpassword");
+
+		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
+		mvc.perform(put("/participants/testlogin")).andExpect(status().isBadRequest());
+
+		verify(participantService, never()).updateParticipant(any(), any());
+
+	}
 
 }
 

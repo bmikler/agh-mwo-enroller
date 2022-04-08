@@ -25,16 +25,19 @@ public class MeetingRestController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllMeetings() {
-        Collection<Meeting> meetings = meetingService.getAll();
+    public ResponseEntity<?> getAllMeetings(@RequestParam(required = false) boolean sorted) {
+
+        Collection<Meeting> meetings;
+
+        if (sorted) {
+            meetings = meetingService.getAllSorted();
+        } else {
+            meetings = meetingService.getAll();
+        }
+
         return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/sorted", method = RequestMethod.GET)
-    public ResponseEntity<?> getAllMeetingsSortedByTitle() {
-        Collection<Meeting> meetings = meetingService.getAllSorted();
-        return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
-    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<?> getMeetingById(@PathVariable long id) {
@@ -45,10 +48,10 @@ public class MeetingRestController {
         return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ResponseEntity<?> findByTitleOrDescription(@RequestParam String searchText) {
+    @RequestMapping(value = "/search-by-text", method = RequestMethod.GET)
+    public ResponseEntity<?> findByTitleOrDescription(@RequestParam String text) {
 
-        Collection<Meeting> meetings = meetingService.searchByTitleOrDescription(searchText);
+        Collection<Meeting> meetings = meetingService.searchByTitleOrDescription(text);
 
         return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
     }
@@ -72,10 +75,10 @@ public class MeetingRestController {
 
 
     @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public ResponseEntity<?> deleteMeeting(@RequestBody Meeting meeting) {
+    public ResponseEntity<?> deleteMeeting(@RequestParam long id) {
 
-        Meeting meetingToDelete = meetingService.findById(meeting.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting with id" + meeting.getId() + " not found"));
+        Meeting meetingToDelete = meetingService.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting with id" + id + " not found"));
 
         meetingService.deleteMeeting(meetingToDelete);
 
@@ -109,17 +112,17 @@ public class MeetingRestController {
 
 
     @RequestMapping(value = "/{id}/participants", method = RequestMethod.POST)
-    public ResponseEntity<?> addParticipantsToMeeting(@PathVariable long id, @RequestBody Participant participant) {
+    public ResponseEntity<?> addParticipantsToMeeting(@PathVariable long id, @RequestParam String participant) {
 
         Meeting meeting = meetingService.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting with id" + id + " not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        Participant participantToAdd = participantService.findByLogin(participant.getLogin())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participant doesn't exist"));
+        Participant participantToAdd = participantService.findByLogin(participant)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         meetingService.addParticipant(meeting, participantToAdd);
 
-        return new ResponseEntity<Participant>(participant, HttpStatus.OK);
+        return new ResponseEntity<Participant>(participantToAdd, HttpStatus.OK);
 
     }
 
@@ -127,7 +130,7 @@ public class MeetingRestController {
     public ResponseEntity<?> removeParticipantFromMeeting(@PathVariable long id, @RequestBody Participant participant) {
 
         Meeting meeting = meetingService.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting with id" + id + " not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         if (!meeting.getParticipants().contains(participant)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
