@@ -1,6 +1,7 @@
 package com.company.enroller.meeting;
 
 import javax.validation.constraints.NotBlank;
+import java.util.Objects;
 
 public class MeetingRequest {
 
@@ -42,6 +43,19 @@ public class MeetingRequest {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MeetingRequest that = (MeetingRequest) o;
+        return title.equals(that.title) && description.equals(that.description) && date.equals(that.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, description, date);
     }
 
     @Override

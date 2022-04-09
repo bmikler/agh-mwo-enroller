@@ -3,6 +3,7 @@ package com.company.enroller.meeting;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.company.enroller.participant.Participant;
 import org.apache.commons.collections.ListUtils;
@@ -38,7 +39,10 @@ public class MeetingService {
 		List<Meeting> meetingsByTitle = repository.findByTitle(text);
 		List<Meeting> meetingsByDescription = repository.findByDescription(text);
 
-		return ListUtils.union(meetingsByTitle, meetingsByDescription);
+		return Stream.of(meetingsByTitle, meetingsByDescription)
+				.flatMap(Collection::stream)
+				.distinct()
+				.toList();
 
 	}
 

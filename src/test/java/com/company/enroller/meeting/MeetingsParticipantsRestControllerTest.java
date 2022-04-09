@@ -80,7 +80,7 @@ public class MeetingsParticipantsRestControllerTest {
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
         when((participantService.findByLogin("login"))).thenReturn(Optional.of(participant));
 
-        mvc.perform(post("/meetings/1/participants?participant=login")).andExpect(status().isOk())
+        mvc.perform(post("/meetings/1/participants?login=login")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.login", is(participant.getLogin())));
 
         verify(meetingService).addParticipant(meeting, participant);
@@ -91,7 +91,7 @@ public class MeetingsParticipantsRestControllerTest {
 
         when(meetingService.findById(1L)).thenReturn(Optional.empty());
 
-        mvc.perform(post("/meetings/1/participants?participant=login")).andExpect(status().isNotFound());
+        mvc.perform(post("/meetings/1/participants?login=login")).andExpect(status().isNotFound());
 
         verify(meetingService, never()).addParticipant(any(), any());
     }
@@ -108,16 +108,107 @@ public class MeetingsParticipantsRestControllerTest {
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
         when(participantService.findByLogin("login")).thenReturn(Optional.empty());
 
-        mvc.perform(post("/meetings/1/participants?participant=login")).andExpect(status().isNotFound());
+        mvc.perform(post("/meetings/1/participants?login=login")).andExpect(status().isNotFound());
 
         verify(meetingService, never()).addParticipant(any(), any());
 
     }
 
-    /*
-    * TODO
-    *  delete participant - meeting found/ not found/ participant found / not found / meeting contains this participant or not
-    *
-    * */
+    @Test
+    public void addParticipantParticipantAlreadyAssigned() throws Exception {
+        Meeting meeting = new Meeting();
+        meeting.setId(1L);
+        meeting.setTitle("title");
+        meeting.setDescription("description");
+        meeting.setDate("date");
+
+        Participant participant = new Participant();
+        participant.setLogin("login");
+        participant.setPassword("password");
+
+        meeting.addParticipant(participant);
+
+        when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
+        when(participantService.findByLogin("login")).thenReturn(Optional.of(participant));
+
+        mvc.perform(post("/meetings/1/participants?login=login")).andExpect(status().isBadRequest());
+
+
+        verify(meetingService, never()).addParticipant(meeting, participant);
+
+    }
+
+    @Test
+    public void removeParticipantOK() throws Exception {
+        Meeting meeting = new Meeting();
+        meeting.setId(1L);
+        meeting.setTitle("title");
+        meeting.setDescription("description");
+        meeting.setDate("date");
+
+        Participant participant = new Participant();
+        participant.setLogin("login");
+        participant.setPassword("password");
+
+        meeting.addParticipant(participant);
+
+        when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
+        when(participantService.findByLogin("login")).thenReturn(Optional.of(participant));
+
+        mvc.perform(delete("/meetings/1/participants?login=login")).andExpect(status().isNoContent());
+
+        verify(meetingService).removeParticipant(meeting, participant);
+
+    }
+
+    @Test
+    public void removeParticipantMeetingNotFound() throws Exception {
+
+        when(meetingService.findById(1L)).thenReturn(Optional.empty());
+
+        mvc.perform(delete("/meetings/1/participants?login=login")).andExpect(status().isNotFound());
+
+        verify(meetingService, never()).addParticipant(any(), any());
+    }
+
+    @Test
+    public void removeParticipantParticipantNotFound() throws Exception {
+        Meeting meeting = new Meeting();
+        meeting.setId(1L);
+        meeting.setTitle("title");
+        meeting.setDescription("description");
+        meeting.setDate("date");
+
+        when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
+        when(participantService.findByLogin("login")).thenReturn(Optional.empty());
+
+        mvc.perform(delete("/meetings/1/participants?login=login")).andExpect(status().isNotFound());
+
+        verify(meetingService, never()).removeParticipant(eq(meeting), any());
+
+    }
+
+    @Test
+    public void removeParticipantParticipantNotSignedToMeeting() throws Exception {
+        Meeting meeting = new Meeting();
+        meeting.setId(1L);
+        meeting.setTitle("title");
+        meeting.setDescription("description");
+        meeting.setDate("date");
+
+        Participant participant = new Participant();
+        participant.setLogin("login");
+        participant.setPassword("password");
+
+        when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
+        when((participantService.findByLogin("login"))).thenReturn(Optional.of(participant));
+
+        mvc.perform(post("/meetings/1/participants?participant=login")).andExpect(status().isBadRequest());
+
+        verify(meetingService, never()).addParticipant(meeting, participant);
+
+
+    }
+
 
 }

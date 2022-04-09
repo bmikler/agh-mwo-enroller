@@ -43,7 +43,7 @@ public class MeetingRestController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public ResponseEntity<?> findByTitleOrDescription(@RequestParam(required = false) String text,
+    public ResponseEntity<?> searchByTitleOrDescription(@RequestParam(required = false) String text,
                                                       @RequestParam(required = false) String participant) {
 
         if (text != null && participant == null) {
@@ -80,7 +80,7 @@ public class MeetingRestController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateMeeting (@PathVariable long id, @RequestBody MeetingRequest meetingRequest) {
+    public ResponseEntity<?> updateMeeting (@PathVariable long id, @Valid @RequestBody MeetingRequest meetingRequest) {
 
         Meeting meeting = meetingService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting not found."));
@@ -103,13 +103,17 @@ public class MeetingRestController {
 
 
     @RequestMapping(value = "/{id}/participants", method = RequestMethod.POST)
-    public ResponseEntity<?> addParticipantsToMeeting(@PathVariable long id, @RequestParam String participant) {
+    public ResponseEntity<?> addParticipantsToMeeting(@PathVariable long id, @RequestParam String login) {
 
         Meeting meeting = meetingService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting not found."));
 
-        Participant participantToAdd = participantService.findByLogin(participant)
+        Participant participantToAdd = participantService.findByLogin(login)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participant not found."));
+
+        if(meeting.getParticipants().contains(participantToAdd)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Participant already assigned to the meeting");
+        }
 
         meetingService.addParticipant(meeting, participantToAdd);
 
@@ -117,8 +121,8 @@ public class MeetingRestController {
 
     }
 
-    @RequestMapping(value = "/{id}/participants/{login}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> removeParticipantFromMeeting(@PathVariable long id, @PathVariable String login) {
+    @RequestMapping(value = "/{id}/participants", method = RequestMethod.DELETE)
+    public ResponseEntity<?> removeParticipantFromMeeting(@PathVariable long id, @RequestParam String login) {
 
         Meeting meeting = meetingService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting not found."));
