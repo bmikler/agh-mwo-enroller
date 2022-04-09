@@ -71,14 +71,5 @@ public class MeetingHibernateRepository extends HibernateRepository {
 
     }
 
-    public List<Participant> getParticipants (Meeting meeting) {
-        String hql = "select participants FROM Meeting m where m.id =: id";
-        Query query = connector.getSession().createQuery(hql);
-
-        query.setParameter("id", meeting.getId());
-
-        return query.list();
-
-    }
 
 }

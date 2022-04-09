@@ -38,7 +38,8 @@ public class ParticipantRestController {
 	public ResponseEntity<?> registerParticipant(@Valid @RequestBody Participant participant) {
 
 		participantService.findByLogin(participant.getLogin()).ifPresent(p -> {
-			throw new ResponseStatusException(HttpStatus.CONFLICT);
+			throw new ResponseStatusException(HttpStatus.CONFLICT,
+					"Participant with login " + participant.getLogin() + " already exist.");
 		});
 
 		participantService.addParticipant(participant);
@@ -51,7 +52,8 @@ public class ParticipantRestController {
 	public ResponseEntity<?> deleteParticipant(@PathVariable String login) {
 
 		Participant participantFound = participantService.findByLogin(login)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+						"Participant not found."));
 
 		participantService.deleteParticipant(participantFound);
 
@@ -64,11 +66,11 @@ public class ParticipantRestController {
 	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login,@RequestParam  String password) {
 
 		if (password.isBlank()){
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password can`t be blank.");
 		}
 
 		Participant participant = participantService.findByLogin(login).orElseThrow(
-			() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+			() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participant not found."));
 
 		Participant participantUpdated = participantService.updateParticipant(participant, password);
 

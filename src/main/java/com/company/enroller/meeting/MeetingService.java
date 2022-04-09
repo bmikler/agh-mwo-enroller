@@ -55,12 +55,6 @@ public class MeetingService {
 
 	}
 
-	public List<Participant> getParticipant(Meeting meeting) {
-
-		return repository.getParticipants(meeting);
-
-	}
-
 	public void addParticipant(Meeting meeting, Participant participant) {
 
 		meeting.addParticipant(participant);
