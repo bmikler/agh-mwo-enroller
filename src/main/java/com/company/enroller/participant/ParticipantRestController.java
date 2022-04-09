@@ -23,16 +23,15 @@ public class ParticipantRestController {
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<?> getParticipants() {
-		Collection<Participant> participants = participantService.getAll();
-		return new ResponseEntity<Collection<Participant>>(participants, HttpStatus.OK);
+
+		return ResponseEntity.ok(participantService.getAll());
+
 	}
 
 	@RequestMapping(value = "/{login}", method = RequestMethod.GET)
 	public ResponseEntity<?> getParticipantById(@PathVariable("login") String login) {
 
-		Optional<Participant> participant = participantService.findByLogin(login);
-
-		return ResponseEntity.of(participant);
+		return ResponseEntity.of(participantService.findByLogin(login));
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
@@ -61,7 +60,7 @@ public class ParticipantRestController {
 	}
 
 
-	@RequestMapping(value = "/{login}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{login}", method = RequestMethod.PATCH)
 	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login,@RequestParam  String password) {
 
 		if (password.isBlank()){
@@ -73,7 +72,7 @@ public class ParticipantRestController {
 
 		Participant participantUpdated = participantService.updateParticipant(participant, password);
 
-		return new ResponseEntity<Participant>(participantUpdated, HttpStatus.OK);
+		return ResponseEntity.ok(participantUpdated);
 
 	}
 

@@ -129,46 +129,9 @@ public class MeetingRestControllerTest {
 
     }
 
-    @Test
-    public void findMeetingByTitleOrDescriptionMeetingsFound() throws Exception {
-
-        Meeting firstMeeting = new Meeting();
-        firstMeeting.setId(1L);
-        firstMeeting.setTitle("search");
-        firstMeeting.setDescription("description");
-        firstMeeting.setDate("date");
-
-        Meeting secondMeeting = new Meeting();
-        firstMeeting.setId(2L);
-        firstMeeting.setTitle("title");
-        firstMeeting.setDescription("search description");
-        firstMeeting.setDate("date");
-
-        List<Meeting> meetings = List.of(firstMeeting, secondMeeting);
-
-        when(meetingService.searchByTitleOrDescription("search")).thenReturn(meetings);
-
-        mvc.perform(get("/meetings/search-by-text?text=search"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].title", is(firstMeeting.getTitle())))
-                .andExpect(jsonPath("$[1].title", is(secondMeeting.getTitle())));
-
-    }
-
-    @Test
-    public void findMeetingByTitleOrDescriptionMeetingsNotFound() throws Exception {
-
-        when(meetingService.searchByTitleOrDescription("search")).thenReturn(Collections.emptyList());
-
-        mvc.perform(get("/meetings/search-by-text?text=search"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)));
-    }
-
 
     /*TODO
-       search by participant - present/notfound
+       search by participant found not found, by text found not found, without paramters error, both parameters error
        add meeting - correct, incomplete
        delete meeting - already exist ot not
        update meeitng - found not found

@@ -1,9 +1,14 @@
 package com.company.enroller.meeting;
 
+import javax.validation.constraints.NotBlank;
+
 public class MeetingRequest {
 
+    @NotBlank
     private String title;
+    @NotBlank
     private String description;
+    @NotBlank
     private String date;
 
     public MeetingRequest() {

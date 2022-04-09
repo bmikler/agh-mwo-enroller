@@ -225,7 +225,7 @@ public class ParticipantRestControllerTest {
 
 
 		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
-		mvc.perform(put("/participants/testlogin?password=")).andExpect(status().isBadRequest());
+		mvc.perform(patch("/participants/testlogin?password=")).andExpect(status().isBadRequest());
 
 		verify(participantService, never()).updateParticipant(any(), any());
 
@@ -239,7 +239,7 @@ public class ParticipantRestControllerTest {
 		participant.setPassword("testpassword");
 
 		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
-		mvc.perform(put("/participants/testlogin")).andExpect(status().isBadRequest());
+		mvc.perform(patch("/participants/testlogin")).andExpect(status().isBadRequest());
 
 		verify(participantService, never()).updateParticipant(any(), any());
 
