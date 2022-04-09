@@ -175,12 +175,9 @@ public class ParticipantRestControllerTest {
 		participant.setLogin("testlogin");
 		participant.setPassword("testpassword");
 
-		String inputJSON = "{\"login\":\"testlogin\", \"password\":\"testpassword\"}";
-
 		when(participantService.findByLogin("testlogin")).thenReturn(Optional.of(participant));
 
-		mvc.perform(delete("/participants").content(inputJSON)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent());
+		mvc.perform(delete("/participants/testlogin")).andExpect(status().isNoContent());
 
 		verify(participantService).deleteParticipant(participant);
 
@@ -188,12 +185,10 @@ public class ParticipantRestControllerTest {
 
 	@Test
 	public void deleteParticipantNotExist() throws Exception {
-		String inputJSON = "{\"login\":\"testlogin\", \"password\":\"testpassword\"}";
 
-		when(participantService.findByLogin("testLogin")).thenReturn(Optional.empty());
+		when(participantService.findByLogin("testlogin")).thenReturn(Optional.empty());
 
-		mvc.perform(delete("/participants").content(inputJSON)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+		mvc.perform(delete("/participants/testlogin")).andExpect(status().isBadRequest());
 
 		verify(participantService, never()).deleteParticipant(any());
 

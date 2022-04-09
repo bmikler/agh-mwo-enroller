@@ -1,6 +1,7 @@
 package com.company.enroller.participant;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,10 +30,9 @@ public class ParticipantRestController {
 	@RequestMapping(value = "/{login}", method = RequestMethod.GET)
 	public ResponseEntity<?> getParticipantById(@PathVariable("login") String login) {
 
-		Participant participant = participantService.findByLogin(login)
-				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		Optional<Participant> participant = participantService.findByLogin(login);
 
-		return new ResponseEntity<Participant>(participant, HttpStatus.OK);
+		return ResponseEntity.of(participant);
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
@@ -48,10 +48,10 @@ public class ParticipantRestController {
 
 	}
 
-	@RequestMapping(value = "", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteParticipant(@RequestBody Participant participant) {
+	@RequestMapping(value = "/{login}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteParticipant(@PathVariable String login) {
 
-		Participant participantFound = participantService.findByLogin(participant.getLogin())
+		Participant participantFound = participantService.findByLogin(login)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
 
 		participantService.deleteParticipant(participantFound);
