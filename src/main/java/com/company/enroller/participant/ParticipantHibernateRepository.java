@@ -22,7 +22,7 @@ public class ParticipantHibernateRepository extends HibernateRepository {
 
         try {
             Participant participant = (Participant) query.getSingleResult();
-            return Optional.of(participant);
+            return Optional.ofNullable(participant);
         } catch (NoResultException e) {
             return Optional.empty();
         }

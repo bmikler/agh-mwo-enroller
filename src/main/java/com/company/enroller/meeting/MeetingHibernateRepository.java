@@ -29,7 +29,7 @@ public class MeetingHibernateRepository extends HibernateRepository {
 
         try {
             Meeting meeting = (Meeting) query.getSingleResult();
-            return Optional.of(meeting);
+            return Optional.ofNullable(meeting);
         } catch (NoResultException e) {
             return Optional.empty();
         }

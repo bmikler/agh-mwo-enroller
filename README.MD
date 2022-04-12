@@ -1,32 +1,21 @@
 
-    Wersja BASIC
-        Pobieranie listy wszystkich spotkań
-        Pobieranie listy pojedyncznego spotkania
-        Dodawanie spotkań
-        Dodawanie uczestnika do spotkania
-        Pobieranie uczestników spotkania
-    Wersja GOLD (dodatkowo do BASIC)
-        Usuwanie spotkań
-        Aktualizację spotkań
-        Usuwanie uczestnika ze spotkania
-    Wersja PREMIUM (dodatkowo do GOLD)
-        Sortowanie listy spotkań po tytule spotkania
-        Przeszukiwanie listy spotkań po tytule i opisie (na zasadzie substring)
-        Przeszukiwanie listy spotkań po zapisanym uczestniku spotkania
+## MWO Enroller
+
+### [Heroku deployment](https://mwoenroller.herokuapp.com/)
 
 ## Endpoints:
 
 ### Basic:
- - get all meetings
- - get single meeting by id
- - add meeting
- - add participant to the meeting
- - get all participants from meeting
+ - get all meetings - GET /meetings
+ - get single meeting by id - GET /meetings/{id} - request body new meeting.
+ - add meeting - POST /meetings
+ - add participant to the meeting - POST meetings/{id}/participants?login={participant login}
+ - get all participants from meeting - GET /meetings/{id}/participants
 ### Gold:
- - delete meeting
- - update meeting
- - remove participant from meeting
+ - delete meeting - DELETE /meetings/{id}
+ - update meeting - PUT /meetings/{id} - request body new meeting.
+ - remove participant from meeting - DELETE meetings/{id}/participants?login={participant login}
 ### Premium:
- - sort meetings by title
- - search meetings by title or description contains text
- - search meetings by participant signed to them
+ - sort meetings by title - GET /meetings?sorted=true
+ - search meetings by title or description contains text GET /meetings/search?text={search text}
+ - search meetings by participant signed to them GET /meetings/search?participant={participant login}
