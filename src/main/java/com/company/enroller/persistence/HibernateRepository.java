@@ -3,7 +3,11 @@ package com.company.enroller.persistence;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.Collection;
+import java.util.List;
 
 public abstract class HibernateRepository {
 
@@ -24,11 +28,14 @@ public abstract class HibernateRepository {
 
     public <T> Collection<T> readAll(Class<T> t){
 
-        String hql = "FROM :type";
-        Query query = connector.getSession().createQuery(hql);
-        query.setParameter("type", t);
+        Session session = connector.getSession();
 
-        return query.list();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<T> criteria = builder.createQuery(t);
+        criteria.from(t);
+        List<T> data = session.createQuery(criteria).getResultList();
+
+        return data;
 
     }
 
