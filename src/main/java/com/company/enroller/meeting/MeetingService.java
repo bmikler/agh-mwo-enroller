@@ -4,9 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import com.company.enroller.participant.Participant;
-import org.apache.commons.collections.ListUtils;
 import org.springframework.stereotype.Service;
 
 @Service

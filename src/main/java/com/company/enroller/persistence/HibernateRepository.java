@@ -1,10 +1,8 @@
 package com.company.enroller.persistence;
 
-import com.company.enroller.participant.Participant;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-
 import java.util.Collection;
 
 public abstract class HibernateRepository {

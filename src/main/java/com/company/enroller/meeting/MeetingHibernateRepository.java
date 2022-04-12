@@ -1,10 +1,8 @@
 package com.company.enroller.meeting;
 
-import com.company.enroller.participant.Participant;
 import com.company.enroller.persistence.HibernateRepository;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.NoResultException;
 import java.util.Collection;
 import java.util.List;

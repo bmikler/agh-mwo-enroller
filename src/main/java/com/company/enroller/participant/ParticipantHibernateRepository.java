@@ -1,9 +1,6 @@
 package com.company.enroller.participant;
 
-import com.company.enroller.persistence.DatabaseConnector;
 import com.company.enroller.persistence.HibernateRepository;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 

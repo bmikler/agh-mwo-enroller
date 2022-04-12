@@ -4,9 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
 import javax.persistence.*;
-
 import com.company.enroller.participant.Participant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
