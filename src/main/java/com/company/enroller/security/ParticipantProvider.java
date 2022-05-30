@@ -17,7 +17,6 @@ public class ParticipantProvider implements UserDetailsService {
     @Autowired
     ParticipantService participantService;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Participant participant = participantService.findByLogin(username)
