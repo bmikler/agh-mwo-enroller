@@ -18,13 +18,15 @@ public class MeetingService {
 		this.mapper = mapper;
 	}
 
-	public Collection<Meeting> getAll() {
-		return repository.readAll(Meeting.class);
+	public Collection<MeetingResponse> getAll() {
+		return repository.getAll().stream()
+				.map(mapper::map).toList();
 	}
 
-	public Collection<Meeting> getAllSorted() {
+	public Collection<MeetingResponse> getAllSorted() {
 
-		return repository.getAllSortedByTitle();
+		return repository.getAllSortedByTitle()
+				.stream().map(mapper::map).toList();
 
 	}
 
@@ -32,7 +34,7 @@ public class MeetingService {
 		return repository.findById(id);
     }
 
-	public Collection<Meeting> searchByTitleOrDescription(String text) {
+	public Collection<MeetingResponse> searchByTitleOrDescription(String text) {
 
 		List<Meeting> meetingsByTitle = repository.findByTitle(text);
 		List<Meeting> meetingsByDescription = repository.findByDescription(text);
@@ -40,13 +42,15 @@ public class MeetingService {
 		return Stream.of(meetingsByTitle, meetingsByDescription)
 				.flatMap(Collection::stream)
 				.distinct()
+				.map(mapper::map)
 				.toList();
 
 	}
 
-	public Collection<Meeting> searchByParticipant(String participant) {
+	public Collection<MeetingResponse> searchByParticipant(String participant) {
 
-		return repository.findByParticipant(participant);
+		return repository.findByParticipant(participant)
+				.stream().map(mapper::map).toList();
 
 	}
 
@@ -78,9 +82,8 @@ public class MeetingService {
 
 	public Meeting update(Meeting meeting, MeetingRequest meetingRequest) {
 
-		meeting.setTitle(meetingRequest.getTitle());
-		meeting.setDescription(meetingRequest.getDescription());
-		meeting.setDate(meetingRequest.getDate());
+		meeting.setName(meetingRequest.getName());
+		meeting.setDescription(meetingRequest.getDescription());;
 
 		repository.update(meeting);
 

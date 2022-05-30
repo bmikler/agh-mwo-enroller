@@ -1,21 +1,21 @@
 package com.company.enroller.meeting;
 
+import com.company.enroller.participant.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import java.util.Objects;
+import javax.persistence.*;
+import java.util.Set;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class MeetingRequest {
+@AllArgsConstructor
+public class MeetingResponse {
 
-    @NotBlank
+    private long id;
     private String name;
-    @NotBlank
     private String description;
-
+    private Set<String> participants;
 
 }

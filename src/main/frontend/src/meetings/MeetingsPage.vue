@@ -30,18 +30,54 @@
             };
         },
         methods: {
-            addNewMeeting(meeting) {
-                this.meetings.push(meeting);
+            addNewMeeting(meeting) {                
+                this.$http.post('meetings', meeting)
+                    .then(() => {
+                        this.reloadMeetings();
+                    })
+                    .catch(err => console.log("error:" + err));
+
             },
             addMeetingParticipant(meeting) {
-                meeting.participants.push(this.username);
+
+                this.$http.post('meetings/' + meeting.id +'/participants?username=' + this.username)
+                    .then((response) => {
+                        console.log(response);
+                        this.reloadMeetings();
+                    })
+                    .catch(err => console.log("error" + err))
+
             },
             removeMeetingParticipant(meeting) {
-                meeting.participants.splice(meeting.participants.indexOf(this.username), 1);
+                this.$http.delete('meetings/' + meeting.id +'/participants?username=' + this.username)
+                    .then((response) => {
+                        console.log(response);
+                        this.reloadMeetings();
+                    })
+                    .catch(err => console.log("error" + err))
             },
             deleteMeeting(meeting) {
-                this.meetings.splice(this.meetings.indexOf(meeting), 1);
+
+                this.$http.delete('meetings/' + meeting.id)
+                    .then((response) => {
+                        console.log(response);
+                        this.reloadMeetings();
+                    })
+                    .catch(err => console.log("error" + err))
+            },
+            reloadMeetings() {
+
+                this.$http.get('meetings')
+                    .then(response => {
+                        console.log(response.body);
+                        this.meetings = response.body;
+                    })
+
             }
+        },
+
+        mounted() {
+            this.reloadMeetings();
         }
     }
 </script>

@@ -101,12 +101,12 @@ public class MeetingRestController {
 
 
     @RequestMapping(value = "/{id}/participants", method = RequestMethod.POST)
-    public ResponseEntity<?> addParticipantsToMeeting(@PathVariable long id, @RequestParam String login) {
+    public ResponseEntity<?> addParticipantsToMeeting(@PathVariable long id, @RequestParam String username) {
 
         Meeting meeting = meetingService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting not found."));
 
-        Participant participantToAdd = participantService.findByLogin(login)
+        Participant participantToAdd = participantService.findByLogin(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participant not found."));
 
         if(meeting.getParticipants().contains(participantToAdd)) {
@@ -120,17 +120,17 @@ public class MeetingRestController {
     }
 
     @RequestMapping(value = "/{id}/participants", method = RequestMethod.DELETE)
-    public ResponseEntity<?> removeParticipantFromMeeting(@PathVariable long id, @RequestParam String login) {
+    public ResponseEntity<?> removeParticipantFromMeeting(@PathVariable long id, @RequestParam String username) {
 
         Meeting meeting = meetingService.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting not found."));
 
-        Participant participant = participantService.findByLogin(login)
+        Participant participant = participantService.findByLogin(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participant not found."));
 
         if (!meeting.getParticipants().contains(participant)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Participant " + login + " is not assigned to meeting " + id);
+                    "Participant " + username + " is not assigned to meeting " + id);
         }
 
         meetingService.removeParticipant(meeting, participant);
