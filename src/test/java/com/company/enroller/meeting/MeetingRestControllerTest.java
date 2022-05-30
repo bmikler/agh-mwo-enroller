@@ -50,7 +50,7 @@ public class MeetingRestControllerTest {
 
         when(meetingService.getAll()).thenReturn(allMeetings);
 
-        mvc.perform(get("/meetings")).andExpect(status().isOk())
+        mvc.perform(get("/api/meetings")).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].title", is(firstMeeting.getTitle())))
                 .andExpect(jsonPath("$[1].title", is(secondMeeting.getTitle())));
@@ -66,7 +66,7 @@ public class MeetingRestControllerTest {
 
         when(meetingService.getAll()).thenReturn(allMeetings);
 
-        mvc.perform(get("/meetings")).andExpect(status().isOk())
+        mvc.perform(get("/api/meetings")).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
 
         verify(meetingService, never()).getAllSorted();
@@ -82,7 +82,7 @@ public class MeetingRestControllerTest {
 
         when(meetingService.getAllSorted()).thenReturn(allMeetings);
 
-        mvc.perform(get("/meetings?sorted=true")).andExpect(status().isOk())
+        mvc.perform(get("/api/meetings?sorted=true")).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].title", is(firstMeeting.getTitle())))
                 .andExpect(jsonPath("$[1].title", is(secondMeeting.getTitle())));
@@ -98,7 +98,7 @@ public class MeetingRestControllerTest {
 
         when(meetingService.getAll()).thenReturn(allMeetings);
 
-        mvc.perform(get("/meetings?sorted=true")).andExpect(status().isOk())
+        mvc.perform(get("/api/meetings?sorted=true")).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
 
         verify(meetingService, never()).getAll();
@@ -116,7 +116,7 @@ public class MeetingRestControllerTest {
 
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
 
-        mvc.perform(get("/meetings/1")).andExpect(status().isOk())
+        mvc.perform(get("/api/meetings/1")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.title", is(meeting.getTitle())))
                 .andExpect(jsonPath("$.description", is(meeting.getDescription())))
                 .andExpect(jsonPath("$.date", is(meeting.getDate())));
@@ -128,7 +128,7 @@ public class MeetingRestControllerTest {
 
         when(meetingService.findById(1L)).thenReturn(Optional.empty());
 
-        mvc.perform(get("/meetings/1")).andExpect(status().isNotFound());
+        mvc.perform(get("/api/meetings/1")).andExpect(status().isNotFound());
 
     }
 
@@ -149,7 +149,7 @@ public class MeetingRestControllerTest {
 
         when(meetingService.searchByTitleOrDescription("title")).thenReturn(List.of(meeting1, meeting2));
 
-        mvc.perform(get("/meetings/search?text=title")).andExpect(status().isOk())
+        mvc.perform(get("/api/meetings/search?text=title")).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].title", is(meeting1.getTitle())))
                 .andExpect(jsonPath("$[1].title", is(meeting2.getTitle())));
@@ -161,7 +161,7 @@ public class MeetingRestControllerTest {
     public void searchByTextNothingFound() throws Exception {
         when(meetingService.searchByTitleOrDescription("title")).thenReturn(Collections.emptyList());
 
-        mvc.perform(get("/meetings/search?text=title")).andExpect(status().isOk())
+        mvc.perform(get("/api/meetings/search?text=title")).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
 
         verify(meetingService, never()).searchByParticipant(any());
@@ -190,7 +190,7 @@ public class MeetingRestControllerTest {
 
         when(meetingService.searchByParticipant("login")).thenReturn(List.of(meeting1, meeting2));
 
-        mvc.perform(get("/meetings/search?participant=login")).andExpect(status().isOk())
+        mvc.perform(get("/api/meetings/search?participant=login")).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].title", is(meeting1.getTitle())))
                 .andExpect(jsonPath("$[1].title", is(meeting2.getTitle())));
@@ -202,14 +202,14 @@ public class MeetingRestControllerTest {
     @Test
     public void searchWithoutParameters() throws Exception {
 
-        mvc.perform(get("/meetings/search")).andExpect(status().isBadRequest());
+        mvc.perform(get("/api/meetings/search")).andExpect(status().isBadRequest());
 
     }
 
     @Test
     public void searchWithBothParameters() throws Exception {
 
-        mvc.perform(get("/meetings/search?text=test&&participant=test"))
+        mvc.perform(get("/api/meetings/search?text=test&&participant=test"))
                 .andExpect(status().isBadRequest());
 
     }
@@ -221,7 +221,7 @@ public class MeetingRestControllerTest {
 
         String inputJSON = "{\"title\":\"title\", \"description\":\"description\", \"date\":\"date\"}";
 
-        mvc.perform(post("/meetings").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(post("/api/meetings").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated()).andExpect(jsonPath("$.title", is(meeting.getTitle())));
 
     }
@@ -231,7 +231,7 @@ public class MeetingRestControllerTest {
 
         String inputJson = "{}";
 
-        mvc.perform(post("/meetings").content(inputJson)).andExpect(status().isUnsupportedMediaType());
+        mvc.perform(post("/api/meetings").content(inputJson)).andExpect(status().isUnsupportedMediaType());
 
         verify(meetingService, never()).addMeeting(any());
     }
@@ -241,7 +241,7 @@ public class MeetingRestControllerTest {
 
         String inputJson = "{\"title\":\"\", \"description\":\"description\", \"date\":\"date\"}";
 
-        mvc.perform(post("/meetings").content(inputJson)).andExpect(status().isUnsupportedMediaType());
+        mvc.perform(post("/api/meetings").content(inputJson)).andExpect(status().isUnsupportedMediaType());
 
         verify(meetingService, never()).addMeeting(any());
     }
@@ -251,7 +251,7 @@ public class MeetingRestControllerTest {
 
         String inputJson = "{\"title\":\"title\", \"description\":\"\", \"date\":\"date\"}";
 
-        mvc.perform(post("/meetings").content(inputJson)).andExpect(status().isUnsupportedMediaType());
+        mvc.perform(post("/api/meetings").content(inputJson)).andExpect(status().isUnsupportedMediaType());
 
         verify(meetingService, never()).addMeeting(any());
     }
@@ -261,7 +261,7 @@ public class MeetingRestControllerTest {
 
         String inputJson = "{\"title\":\"title\", \"description\":\"description\", \"date\":\"\"}";
 
-        mvc.perform(post("/meetings").content(inputJson)).andExpect(status().isUnsupportedMediaType());
+        mvc.perform(post("/api/meetings").content(inputJson)).andExpect(status().isUnsupportedMediaType());
 
         verify(meetingService, never()).addMeeting(any());
     }
@@ -276,7 +276,7 @@ public class MeetingRestControllerTest {
 
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
 
-        mvc.perform(delete("/meetings/1")).andExpect(status().isNoContent());
+        mvc.perform(delete("/api/meetings/1")).andExpect(status().isNoContent());
 
         verify(meetingService).deleteMeeting(meeting);
 
@@ -286,7 +286,7 @@ public class MeetingRestControllerTest {
     public void deleteMeetingMeetingNotFound() throws Exception {
         when(meetingService.findById(1L)).thenReturn(Optional.empty());
 
-        mvc.perform(delete("/meetings/1")).andExpect(status().isNotFound());
+        mvc.perform(delete("/api/meetings/1")).andExpect(status().isNotFound());
 
         verify(meetingService, never()).deleteMeeting(any());
 
@@ -317,7 +317,7 @@ public class MeetingRestControllerTest {
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
         when(meetingService.update(meeting, meetingRequest)).thenReturn(meetingUpdated);
 
-        mvc.perform(put("/meetings/1").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(put("/api/meetings/1").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.title", is(meetingUpdated.getTitle())))
@@ -333,7 +333,7 @@ public class MeetingRestControllerTest {
 
         when(meetingService.findById(1L)).thenReturn(Optional.empty());
 
-        mvc.perform(put("/meetings/1").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(put("/api/meetings/1").content(inputJSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 
         verify(meetingService, never()).update(any(), any());

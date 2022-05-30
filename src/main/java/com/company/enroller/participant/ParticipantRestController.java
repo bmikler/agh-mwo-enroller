@@ -9,7 +9,7 @@ import javax.validation.Valid;
 
 
 @RestController
-@RequestMapping("/participants")
+@RequestMapping("/api/participants")
 public class ParticipantRestController {
 
 	@Autowired
@@ -56,7 +56,7 @@ public class ParticipantRestController {
 	}
 
 
-	@RequestMapping(value = "/{login}", method = RequestMethod.PATCH)
+	@RequestMapping(value = "/{login}", method = RequestMethod.PUT)
 	public ResponseEntity<?> updateParticipantPassword(@PathVariable String login,@RequestParam  String password) {
 
 		if (password.isBlank()){

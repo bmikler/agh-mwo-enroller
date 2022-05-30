@@ -11,7 +11,7 @@ import javax.validation.Valid;
 
 
 @RestController
-@RequestMapping("/meetings")
+@RequestMapping("/api/meetings")
 public class MeetingRestController {
 
     @Autowired

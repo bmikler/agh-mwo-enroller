@@ -48,7 +48,7 @@ public class MeetingsParticipantsRestControllerTest {
 
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
 
-        mvc.perform(get("/meetings/1/participants")).andExpect(status().isOk())
+        mvc.perform(get("/api/meetings/1/participants")).andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].login", is(participant.getLogin())));
 
@@ -60,7 +60,7 @@ public class MeetingsParticipantsRestControllerTest {
 
         given(meetingService.findById(1L)).willReturn(Optional.empty());
 
-        mvc.perform(get("/meetings/1/participants"))
+        mvc.perform(get("/api/meetings/1/participants"))
                 .andExpect(status().isNotFound());
 
     }
@@ -80,7 +80,7 @@ public class MeetingsParticipantsRestControllerTest {
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
         when((participantService.findByLogin("login"))).thenReturn(Optional.of(participant));
 
-        mvc.perform(post("/meetings/1/participants?login=login")).andExpect(status().isOk())
+        mvc.perform(post("/api/meetings/1/participants?login=login")).andExpect(status().isOk())
                 .andExpect(jsonPath("$.login", is(participant.getLogin())));
 
         verify(meetingService).addParticipant(meeting, participant);
@@ -91,7 +91,7 @@ public class MeetingsParticipantsRestControllerTest {
 
         when(meetingService.findById(1L)).thenReturn(Optional.empty());
 
-        mvc.perform(post("/meetings/1/participants?login=login")).andExpect(status().isNotFound());
+        mvc.perform(post("/api/meetings/1/participants?login=login")).andExpect(status().isNotFound());
 
         verify(meetingService, never()).addParticipant(any(), any());
     }
@@ -108,7 +108,7 @@ public class MeetingsParticipantsRestControllerTest {
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
         when(participantService.findByLogin("login")).thenReturn(Optional.empty());
 
-        mvc.perform(post("/meetings/1/participants?login=login")).andExpect(status().isNotFound());
+        mvc.perform(post("/api/meetings/1/participants?login=login")).andExpect(status().isNotFound());
 
         verify(meetingService, never()).addParticipant(any(), any());
 
@@ -131,7 +131,7 @@ public class MeetingsParticipantsRestControllerTest {
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
         when(participantService.findByLogin("login")).thenReturn(Optional.of(participant));
 
-        mvc.perform(post("/meetings/1/participants?login=login")).andExpect(status().isBadRequest());
+        mvc.perform(post("/api/meetings/1/participants?login=login")).andExpect(status().isBadRequest());
 
 
         verify(meetingService, never()).addParticipant(meeting, participant);
@@ -155,7 +155,7 @@ public class MeetingsParticipantsRestControllerTest {
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
         when(participantService.findByLogin("login")).thenReturn(Optional.of(participant));
 
-        mvc.perform(delete("/meetings/1/participants?login=login")).andExpect(status().isNoContent());
+        mvc.perform(delete("/api/meetings/1/participants?login=login")).andExpect(status().isNoContent());
 
         verify(meetingService).removeParticipant(meeting, participant);
 
@@ -166,7 +166,7 @@ public class MeetingsParticipantsRestControllerTest {
 
         when(meetingService.findById(1L)).thenReturn(Optional.empty());
 
-        mvc.perform(delete("/meetings/1/participants?login=login")).andExpect(status().isNotFound());
+        mvc.perform(delete("/api/meetings/1/participants?login=login")).andExpect(status().isNotFound());
 
         verify(meetingService, never()).addParticipant(any(), any());
     }
@@ -182,7 +182,7 @@ public class MeetingsParticipantsRestControllerTest {
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
         when(participantService.findByLogin("login")).thenReturn(Optional.empty());
 
-        mvc.perform(delete("/meetings/1/participants?login=login")).andExpect(status().isNotFound());
+        mvc.perform(delete("/api/meetings/1/participants?login=login")).andExpect(status().isNotFound());
 
         verify(meetingService, never()).removeParticipant(eq(meeting), any());
 
@@ -203,7 +203,7 @@ public class MeetingsParticipantsRestControllerTest {
         when(meetingService.findById(1L)).thenReturn(Optional.of(meeting));
         when((participantService.findByLogin("login"))).thenReturn(Optional.of(participant));
 
-        mvc.perform(post("/meetings/1/participants?participant=login")).andExpect(status().isBadRequest());
+        mvc.perform(post("/api/meetings/1/participants?participant=login")).andExpect(status().isBadRequest());
 
         verify(meetingService, never()).addParticipant(meeting, participant);
 
