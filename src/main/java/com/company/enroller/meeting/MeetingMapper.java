@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 public class MeetingMapper {
 
     public Meeting map(MeetingRequest meetingRequest) {
-
         return new Meeting(
                 meetingRequest.getName(),
                 meetingRequest.getDescription(),

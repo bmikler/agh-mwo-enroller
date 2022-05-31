@@ -16,43 +16,25 @@ public abstract class HibernateRepository {
     }
 
     public <T> void create(T t){
-        Session session = connector.getSession();
 
-        Transaction transaction = session.beginTransaction();
-        session.persist(t);
+        Transaction transaction = connector.getSession().beginTransaction();
+        connector.getSession().save(t);
         transaction.commit();
-
-    }
-
-    public <T> Collection<T> readAll(Class<T> t){
-
-        Session session = connector.getSession();
-
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<T> criteria = builder.createQuery(t);
-        criteria.from(t);
-        List<T> data = session.createQuery(criteria).getResultList();
-
-        return data;
 
     }
 
     public <T> void update(T t) {
 
-        Session session = connector.getSession();
-
-        Transaction transaction = session.beginTransaction();
-        session.update(t);
+        Transaction transaction = connector.getSession().beginTransaction();
+        connector.getSession().update(t);
         transaction.commit();
 
     }
 
     public <T> void delete(T t) {
 
-        Session session = connector.getSession();
-
-        Transaction transaction = session.beginTransaction();
-        session.delete(t);
+        Transaction transaction = connector.getSession().beginTransaction();;
+        connector.getSession().delete(t);
         transaction.commit();
 
     }

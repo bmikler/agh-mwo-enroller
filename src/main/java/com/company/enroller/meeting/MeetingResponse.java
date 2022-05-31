@@ -17,7 +17,6 @@ public class MeetingResponse {
     private long id;
     private String name;
     private String description;
-    @JsonIgnore
     private Set<String> participants;
 
 }

@@ -15,7 +15,7 @@ public class ParticipantService {
 	private final PasswordEncoder passwordEncoder;
 
 	public Collection<Participant> getAll() {
-		return repository.readAll(Participant.class);
+		return repository.getAll();
 	}
 
 	public Optional<Participant> findByLogin(String login) {

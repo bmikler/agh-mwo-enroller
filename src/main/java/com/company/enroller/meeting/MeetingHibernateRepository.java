@@ -1,5 +1,6 @@
 package com.company.enroller.meeting;
 
+import com.company.enroller.participant.Participant;
 import com.company.enroller.persistence.HibernateRepository;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -12,11 +13,8 @@ import java.util.Optional;
 public class MeetingHibernateRepository extends HibernateRepository {
 
 
-    public Collection<Meeting> getAll(){
-        String hql = "FROM Meeting";
-        org.hibernate.Query query = connector.getSession().createQuery(hql);
-        return query.list();
-
+    public List<Meeting> getAll() {
+        return connector.getSession().createQuery("SELECT m FROM Meeting m", Meeting.class).getResultList();
     }
 
     public Collection<Meeting> getAllSortedByTitle() {

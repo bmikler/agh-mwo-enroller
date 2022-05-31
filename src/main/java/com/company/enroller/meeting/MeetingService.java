@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 import com.company.enroller.participant.Participant;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class MeetingService {
 
@@ -19,6 +21,7 @@ public class MeetingService {
 	}
 
 	public Collection<MeetingResponse> getAll() {
+
 		return repository.getAll().stream()
 				.map(mapper::map).toList();
 	}
