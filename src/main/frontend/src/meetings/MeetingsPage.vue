@@ -70,9 +70,10 @@
 
                 this.$http.get('meetings')
                     .then(response => {
-                        console.log(response.body);
+                        console.log(response);
                         this.meetings = response.body;
                     })
+                    .catch(err => console.log("error" + err))
 
             }
         },
