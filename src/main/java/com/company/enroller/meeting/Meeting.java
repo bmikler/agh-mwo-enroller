@@ -1,6 +1,7 @@
 package com.company.enroller.meeting;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.*;
@@ -27,11 +28,10 @@ public class Meeting {
 	@Column
 	private String description;
 
-	//@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "meeting_participant", joinColumns = { @JoinColumn(name = "meeting_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "participant_login") })
-	Set<Participant> participants;
+	private Set<Participant> participants = new HashSet<>();
 
 	public Meeting(String name, String description, Set<Participant> participants) {
 		this.name = name;

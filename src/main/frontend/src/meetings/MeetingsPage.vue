@@ -32,7 +32,8 @@
         methods: {
             addNewMeeting(meeting) {                
                 this.$http.post('meetings', meeting)
-                    .then(() => {
+                    .then(response => {
+                        console.log(response);
                         this.reloadMeetings();
                     })
                     .catch(err => console.log("error:" + err));
